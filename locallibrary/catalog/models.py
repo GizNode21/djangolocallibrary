@@ -28,6 +28,30 @@ class Genre(models.Model):
                 violation_error_message="Genre already exists (case insensitive match)"
             ),
         ]
+        
+class Language(models.Model):
+    """Model representing a language (e.g. English, French, Japanese)"""
+    
+    name = models.CharField(
+        max_length=200,
+        unique=True,
+        help_text="Enter the book's natural language (e.g. English, French, Japanese).")
+    
+    def get_absolute_url(self):
+        return reverse('language-detail', args=[str(self.id)])
+    
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                Lower('name'),
+                name='language_name_case_insensitive_unique',
+                violation_error_message="Language already exists (case insensitive match)"
+            ),
+        ]
+    
 
 class Book(models.Model):
     """Model representing a book (but not a specific copy of a book)."""
@@ -50,7 +74,7 @@ class Book(models.Model):
         """String for representing the Model object."""
         return self.title
     
-    def __get_absolute_url(self):
+    def get_absolute_url(self):
         """Returns the url to access a detail record for this book."""
         return reverse('book-detail', args=[str(self.id)])
 
